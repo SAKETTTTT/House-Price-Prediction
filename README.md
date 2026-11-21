@@ -1,95 +1,45 @@
-# 🏡 House Price Prediction using Artificial Neural Network (ANN)
+# House Price Prediction with a Neural Network
 
-Predict the prices of homes with machine learning! Using a neural network and a rich dataset from King County, this project models complex real estate patterns to estimate house values.
+A Keras neural network that predicts house sale prices on the King County (Seattle area) dataset: 21,613 sales and 21 columns, including bedrooms, bathrooms, living area, grade, condition, waterfront, view, year built, latitude and longitude.
 
----
+Everything lives in one notebook: `House-Price-Prediction.ipynb`.
 
-## 💡 Project Overview
+## What the notebook does
 
-This repository demonstrates how to use an ANN to predict house prices by analyzing various features such as number of bedrooms, square footage, renovations, and more. The workflow includes everything from data loading and visualization to model evaluation.
+1. **Explore:** load the data, check for missing values, look at price by year and month.
+2. **Prepare:**
+   - drop `id` and `zipcode`
+   - turn `date` into `month` and `year`
+   - predict `log(1 + price)` instead of the raw price, because prices are heavily skewed
+   - scale features to 0–1 (`MinMaxScaler`)
+   - split 70% train and 30% test
+3. **Model:** two hidden layers (128 and 64 units, ReLU), L2 regularization and 30% dropout, Adam optimizer, mean squared error loss, 100 epochs.
+4. **Evaluate:** error on the held-out test set, plus a predicted-vs-true price plot.
 
+## Results (test set, log-price scale)
 
----
+| Metric | Value |
+|---|---|
+| MAE | 0.153 |
+| RMSE | 0.211 |
+| Explained variance | 0.844 |
 
-## 📦 Dataset Details
+These are on the log scale, so an MAE of 0.153 means predictions are typically around 16% away from the real price. The final cell converts predictions back to dollars and prints the MAE in dollars; re-run the notebook to see it.
 
-**Data Source:** King County Home Sales  
-**Records:** 21,613 rows  
-**Columns:** 21 features, including:
-- `price` (target variable)
-- `bedrooms`, `bathrooms`
-- `sqft_living`, `sqft_lot`, `floors`
-- `waterfront`, `view`, `condition`, `grade`
-- `sqft_above`, `sqft_basement`
-- `yr_built`, `yr_renovated`, `zipcode`
-- `lat`, `long`, `sqft_living15`, `sqft_lot15`
+## Run it
 
----
+```bash
+git clone https://github.com/SAKETTTTT/House-Price-Prediction.git
+cd House-Price-Prediction
+pip install -r requirements.txt
+```
 
-## 🚀 Quickstart
+1. Download `kc_house_data.csv` ("House Sales in King County, USA" on Kaggle) and put it in this folder. The data file is not included in the repo.
+2. Open `House-Price-Prediction.ipynb` in Jupyter and run the cells from top to bottom.
 
-1. **Clone this repository**
-    ```
-    git clone https://github.com/YOUR_USERNAME/house-price-prediction-ann.git
-    cd house-price-prediction-ann
-    ```
-2. **Place the dataset**  
-   Make sure `kc_house_data.csv` is in your working directory or update the path in the notebook.
-   
-3. **Install dependencies**
-    ```
-    pip install numpy pandas seaborn matplotlib tensorflow scikit-learn
-    ```
-4. **Run the Notebook**  
-   Open `House-Price-Prediction.ipynb` with Jupyter Notebook or Jupyter Lab and run cells step-by-step.
+## Ideas for next steps
 
----
-
-## 🔍 Workflow
-
-- **Data Loading & Exploration:** Read dataset and understand feature distributions.
-- **Visualization:** Plot feature trends and correlations with Seaborn/Matplotlib.
-- **Preprocessing:** Clean and scale numeric data for training.
-- **Model Building:** Create and tune an ANN with TensorFlow/Keras.
-- **Evaluation:** Assess with metrics like MAE and MSE.
-- **Prediction:** Use the trained model to estimate home values.
-
----
-
-## 📊 Sample Output
-
-- Mean Absolute Error (MAE) and Mean Squared Error (MSE) to assess prediction quality.
-- Feature importance insights through data visualization.
-- Sample prediction plots visualize model performance vs. ground truth.
-
----
-
-## 🌱 Room for Improvement
-
-- Hyperparameter tuning for better predictions.
-- Try alternative algorithms (e.g., XGBoost, Random Forest).
-- Add feature engineering—handle categorical values like zipcodes, extract new features.
-- Build a simple UI for interactive predictions.
-
----
-
-## 🤝 Contributing
-
-Contributions, issues, and feature requests are welcome!  
-Please use the Issues tab or submit a pull request.
-
----
-
-## 📝 License
-
-This project is open-source for educational and research purposes. See LICENSE file for details.
-
----
-
-## 🙏 Acknowledgments
-
-Thanks to the open-source community and Kaggle/UCI for public datasets!
-
----
-
-> *Ready to predict? Just run the notebook and start learning from real data!*
+- Compare against simpler baselines (linear regression, random forest, XGBoost) to see how much the neural network actually helps.
+- Try cross-validation and hyperparameter search instead of a single train/test split.
+- Use `zipcode` and location features (it was dropped here).
+- Check which features matter most.
